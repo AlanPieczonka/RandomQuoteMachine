@@ -1,18 +1,35 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+
+  state = {
+    quote: "",
+    author: ""
+  }
+
+  componentDidMount() {
+    this.fetchNewQuote();
+  }
+
+  fetchNewQuote = () => {
+    fetch("https://talaikis.com/api/quotes/random/")
+      .then(response => response.json())
+      .then(({ quote, author }) => this.setState({ quote, author }));
+  };
+
   render() {
+    const { quote, author } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div id="quote-box">
+          <span id="text">{this.state.quote}</span>
+          <span id="author">{this.state.author}</span>
+          <button id="new-quote" onClick={this.fetchNewQuote}>New Quote</button>
+          <button>
+          <a href={`https://twitter.com/intent/tweet?text=${quote + ' ' + author}`} target="_blank">Tweet Quote</a>
+          </button>
+        </div>
       </div>
     );
   }
