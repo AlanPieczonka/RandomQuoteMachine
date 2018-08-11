@@ -1,36 +1,47 @@
 import React, { Component } from 'react';
-import './App.css';
+
+import { API_URL, TWITTER_URL } from './urls';
+import { QuoteBox, Quote, Author, ButtonWrapper, Button } from './components';
 
 class App extends Component {
 
   state = {
-    quote: "",
-    author: ""
+    quote: '',
+    author: ''
   }
 
   componentDidMount() {
     this.fetchNewQuote();
   }
 
-  fetchNewQuote = () => {
-    fetch("https://talaikis.com/api/quotes/random/")
-      .then(response => response.json())
-      .then(({ quote, author }) => this.setState({ quote, author }));
+  fetchNewQuote = async () => {
+    const response = await fetch(API_URL)
+    const { quote, author } = await response.json()
+
+    return this.setState({ quote, author })
   };
 
   render() {
     const { quote, author } = this.state;
     return (
-      <div className="App">
-        <div id="quote-box">
-          <span id="text">{this.state.quote}</span>
-          <span id="author">{this.state.author}</span>
-          <button id="new-quote" onClick={this.fetchNewQuote}>New Quote</button>
-          <button>
-          <a href={`https://twitter.com/intent/tweet?text=${quote + ' ' + author}`} target="_blank">Tweet Quote</a>
-          </button>
-        </div>
-      </div>
+        <QuoteBox>
+          <Quote>
+            {quote}
+          </Quote>
+          <Author>
+            {author}
+          </Author>
+          <ButtonWrapper>
+            <Button onClick={this.fetchNewQuote}>
+              New Quote
+            </Button>
+            <a href={`${TWITTER_URL}${quote + ' ' + author}`} target="_blank">
+              <Button twitter>
+                Tweet Quote
+              </Button>
+            </a>
+          </ButtonWrapper>
+        </QuoteBox>
     );
   }
 }
